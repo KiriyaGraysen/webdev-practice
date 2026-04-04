@@ -26,10 +26,20 @@
                 <button class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors text-sm font-semibold">
                     Logout
                 </button>
+                
+                <button id="mobile-btn" class="md:hidden text-2xl focus:outline-none">
+                    ☰
+                </button>
             </div>
             
         </div>
     </nav>
+    
+    <div id="mobile-menu" class="hidden absolute top-16 left-0 w-full bg-white shadow-md border-t border-gray-200 flex-col py-4 px-6 space-y-4 z-40">
+        <a href="#" class="text-gray-600 hover:text-blue-500 font-medium">Dashboard</a>
+        <a href="#" class="text-gray-600 hover:text-blue-500 font-medium">Inventory</a>
+        <a href="#" class="text-gray-600 hover:text-blue-500 font-medium">Reports</a>
+    </div>
 
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-sm text-center">
         
@@ -50,6 +60,18 @@
         </button>
 
     </div>
-
+    
+    <script>
+        // 1. Select the elements from the DOM
+        const btn = document.getElementById('mobile-btn');
+        const menu = document.getElementById('mobile-menu');
+        
+        // 2. Listen for a click event on the button
+        btn.addEventListener('click', () => {
+            // 3. React: Toggle the Tailwind 'hidden' class on and off
+            menu.classList.toggle('hidden');
+            menu.classList.toggle('flex');
+        });
+    </script>
 </body>
 </html>
