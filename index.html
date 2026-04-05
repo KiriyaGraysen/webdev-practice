@@ -65,7 +65,7 @@
     <div class="bg-white p-8 block rounded-lg shadow-md w-full max-w-sm mx-auto mt-4 mb-4">
         <h2 class="text-xl font-bold text-gray-800 mb-4">Add Inventory Item</h2>
         
-        <form id="inventory-form" class="space-y-4">
+        <form id="inventory-form" class="space-y-4" action="POST">
             <div>
                 <label class="block text-sm font-medium text-gray-700">Item Name</label>
                 <input type="text" id="item-name" class="mt-1 block w-full  border border-gray-300 rounded-md p-2 foucs::ring-2 focus:ring-blue-400 focus:outline-none" required>
@@ -101,13 +101,23 @@
         form.addEventListener('submit', (event) => {
            event.preventDefault();
            
-           const itemName = nameInput.value;
-           const itemQty = qtyInput.value;
+           const dataPackage = new FormData();
            
-           successMsg.textContent = `Success! Added ${itemQty} units of ${itemName} to the system.`;
-           successMsg.classList.remove('hidden');
+           dataPackage.append('itemName', nameInput.value);
            
-           form.reset();
+           dataPackage.append('itemQty', qtyInput.value);
+           
+           fetch('save-item.php', {
+               method: 'POST',
+               body: dataPackage
+           })
+           .then(response => response.text())
+           .then(data => {
+               successMsg.textContent = data;
+               successMsg.classList.remove('hidden');
+               
+               form.reset();
+           });
         });
     </script>
 </body>
