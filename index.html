@@ -82,6 +82,22 @@
         <p id="success-msg" class="mt-4 text-green-600 text-sm font-medium hidden"></p>
     </div>
     
+    <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-3xl mx-auto mt-8 overflow-x-auto">
+        <h3 class="text-lg font-bold text-gray-800 mb-4">Live Database Records</h3>
+        
+        <table class="min-w-full text-left text-sm text-gray-600">
+            <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                    <th class="px-4 py-3 font-semibold text-gray-700 text-center">ID</th>
+                    <th class="px-4 py-3 font-semibold text-gray-700 text-center">Item Name</th>
+                    <th class="px-4 py-3 font-semibold text-gray-700 text-center">Quantity</th>
+                </tr>
+            </thead>
+            
+            <tbody id="table-body" class="divide-y divide-gray-200"></tbody>
+        </table>
+    </div>
+    
     <script>
         // 1. Select the elements from the DOM
         const btn = document.getElementById('mobile-btn');
@@ -90,6 +106,7 @@
         const nameInput = document.getElementById('item-name');
         const qtyInput = document.getElementById('item-qty');
         const successMsg = document.getElementById('success-msg');
+        const tableBody = document.getElementById('table-body');
         
         // 2. Listen for a click event on the button
         btn.addEventListener('click', () => {
@@ -99,26 +116,51 @@
         });
         
         form.addEventListener('submit', (event) => {
-           event.preventDefault();
+            event.preventDefault();
            
-           const dataPackage = new FormData();
+            const dataPackage = new FormData();
            
-           dataPackage.append('itemName', nameInput.value);
+            dataPackage.append('itemName', nameInput.value);
            
-           dataPackage.append('itemQty', qtyInput.value);
+            dataPackage.append('itemQty', qtyInput.value);
            
-           fetch('save-item.php', {
-               method: 'POST',
-               body: dataPackage
-           })
-           .then(response => response.text())
-           .then(data => {
-               successMsg.textContent = data;
-               successMsg.classList.remove('hidden');
-               
-               form.reset();
-           });
+            fetch('save_item.php', {
+                method: 'POST',
+                body: dataPackage
+            })
+            .then(response => response.text())
+            .then(data => {
+                successMsg.textContent = data;
+                successMsg.classList.remove('hidden');
+                
+                loadTableData();
+                form.reset();
+            });
         });
+        
+        function loadTableData() {
+            fetch('get_item.php')
+            .then(response => response.json())
+            .then(data => {
+                tableBody.innerHTML = '';
+                
+                data.forEach(row => {
+                    tableBody.innerHTML += `
+                        <tr class="hover:bg-gray-50 transition-colors text-center">
+                            <td class="px-4 py-3">${row.id}</td>
+                            <td class="px-4 py-3 font-medium text-gray-800">${row.item_name}</td>
+                            <td class="px-4 py-3">
+                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-bold">
+                                    ${row.quantity}
+                                </span>
+                            </td>
+                        </tr>
+                    `;
+                });
+            });
+        }
+        
+        loadTableData();
     </script>
 </body>
 </html>

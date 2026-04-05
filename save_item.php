@@ -8,16 +8,15 @@ if ($conn->connect_error) {
 $name = $_POST['itemName'];
 $qty = $_POST['itemQty'];
 
-$sql = "
+$stmt = $conn->prepare("
     INSERT INTO inventory (item_name, quantity)
-    VALUES ('$name', '$qty')";
+    VALUES (?, ?)");
+$stmt->bind_param("ss", $name, $qty);
 
-if ($conn->query($sql) === TRUE) {
+if ($stmt->execute()) {
     echo "Success! $qty units of $name were saved to the database.";
 } else {
     echo "Error: " . $conn->error;
 }
 
 $conn->close();
-
-?>
