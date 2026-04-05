@@ -91,6 +91,7 @@
                     <th class="px-4 py-3 font-semibold text-gray-700 text-center">ID</th>
                     <th class="px-4 py-3 font-semibold text-gray-700 text-center">Item Name</th>
                     <th class="px-4 py-3 font-semibold text-gray-700 text-center">Quantity</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             
@@ -98,15 +99,48 @@
         </table>
     </div>
     
+    <div id="edit-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Edit Inventory Item</h2>
+            
+            <form id="edit-form" class="space-y-4">
+                <input type="hidden" id="edit-id"> 
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Item Name</label>
+                    <input type="text" id="edit-name" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Quantity</label>
+                    <input type="number" id="edit-qty" class="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" required>
+                </div>
+                
+                <div class="flex justify-end space-x-3 mt-6">
+                    <button type="button" id="close-modal-btn" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 font-medium">Cancel</button>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 font-medium">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <script>
         // 1. Select the elements from the DOM
         const btn = document.getElementById('mobile-btn');
         const menu = document.getElementById('mobile-menu');
+        
         const form = document.getElementById('inventory-form');
         const nameInput = document.getElementById('item-name');
         const qtyInput = document.getElementById('item-qty');
         const successMsg = document.getElementById('success-msg');
         const tableBody = document.getElementById('table-body');
+        
+        const editModal = document.getElementById('edit-modal');
+        const editForm = document.getElementById('edit-form');
+        const editIdInput = document.getElementById('edit-id');
+        const editNameInput = document.getElementById('edit-name');
+        const editQtyInput = document.getElementById('edit-qty');
+        const closeModalBtn = document.getElementById('close-modal-btn');
         
         // 2. Listen for a click event on the button
         btn.addEventListener('click', () => {
@@ -154,11 +188,48 @@
                                     ${row.quantity}
                                 </span>
                             </td>
+                            <td class="px-4 py-3">
+                                <button onclick="openEditModal(${row.id}, '${row.item_name}', ${row.quantity})" class="text-blue-500 hover:text-blue-700 font-semibold text-sm">
+                                    Edit
+                                </button>
+                            </td>
                         </tr>
                     `;
                 });
             });
         }
+        
+        function openEditModal(id, name, qty) {
+            editIdInput.value = id;
+            editNameInput.value = name;
+            editQtyInput.value = qty;
+            
+            editModal.classList.remove('hidden');
+        }
+        
+        closeModalBtn.addEventListener('click', () => {
+            editModal.classList.add('hidden');
+        });
+        
+        editForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+           
+            const updateData = new FormData();
+            updateData.append('id', editIdInput.value);
+            updateData.append('itemName', editNameInput.value);
+            updateData.append('itemQty', editQtyInput.value);
+            
+            fetch('update_item.php', {
+                method: 'POST',
+                body: updateData
+            })
+            .then(response => response.text())
+            .then(data => {
+                editModal.classList.add('hidden');
+                loadTableData();
+                alert(data);
+            });
+        });
         
         loadTableData();
     </script>
