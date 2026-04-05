@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tailwind Sandbox v4</title>
+    <title>Web Development Practice</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
+<body class="bg-gray-100">
 
     <nav class="bg-white shadow-md w-full fixed top-0 left-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
@@ -35,13 +35,14 @@
         </div>
     </nav>
     
-    <div id="mobile-menu" class="hidden absolute top-16 left-0 w-full bg-white shadow-md border-t border-gray-200 flex-col py-4 px-6 space-y-4 z-40">
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden absolute top-15 left-0 w-full bg-white shadow-md border-t border-gray-200 flex-col py-4 px-6 space-y-4 z-40">
         <a href="#" class="text-gray-600 hover:text-blue-500 font-medium">Dashboard</a>
         <a href="#" class="text-gray-600 hover:text-blue-500 font-medium">Inventory</a>
         <a href="#" class="text-gray-600 hover:text-blue-500 font-medium">Reports</a>
     </div>
 
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-sm text-center">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-sm text-center mx-auto mt-20">
         
         <div class="w-24 h-24 bg-gray-300 border-blue-500 rounded-full border-4 mx-auto mb-4">
             
@@ -61,16 +62,52 @@
 
     </div>
     
+    <div class="bg-white p-8 block rounded-lg shadow-md w-full max-w-sm mx-auto mt-4 mb-4">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Add Inventory Item</h2>
+        
+        <form id="inventory-form" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Item Name</label>
+                <input type="text" id="item-name" class="mt-1 block w-full  border border-gray-300 rounded-md p-2 foucs::ring-2 focus:ring-blue-400 focus:outline-none" required>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Quantity</label>
+                <input type="number" id="item-qty" class="mt-1 block w-full border border-gray-300 rounded-md p-2 foucs:ring-2 focus: ring-blue-400 focus:outline-none" required>
+            </div>
+            
+            <button type="submit" class="w-full bg-gray-800 text-white font-semibold py-2 rounded-md hover:bg-gray-900 transition-colors">Save to Database</button>
+        </form>
+        
+        <p id="success-msg" class="mt-4 text-green-600 text-sm font-medium hidden"></p>
+    </div>
+    
     <script>
         // 1. Select the elements from the DOM
         const btn = document.getElementById('mobile-btn');
         const menu = document.getElementById('mobile-menu');
+        const form = document.getElementById('inventory-form');
+        const nameInput = document.getElementById('item-name');
+        const qtyInput = document.getElementById('item-qty');
+        const successMsg = document.getElementById('success-msg');
         
         // 2. Listen for a click event on the button
         btn.addEventListener('click', () => {
             // 3. React: Toggle the Tailwind 'hidden' class on and off
             menu.classList.toggle('hidden');
             menu.classList.toggle('flex');
+        });
+        
+        form.addEventListener('submit', (event) => {
+           event.preventDefault();
+           
+           const itemName = nameInput.value;
+           const itemQty = qtyInput.value;
+           
+           successMsg.textContent = `Success! Added ${itemQty} units of ${itemName} to the system.`;
+           successMsg.classList.remove('hidden');
+           
+           form.reset();
         });
     </script>
 </body>
