@@ -1,15 +1,11 @@
 <?php
-$conn = new mysqli("127.0.0.1", "root", "", "system_db");
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once('php/database.php');
 
 $sql = "
     SELECT id, item_name, quantity
     FROM inventory
     ORDER BY id DESC
-    ";
+";
 $result = $conn->query($sql);
 
 $inventory = array();

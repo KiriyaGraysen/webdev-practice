@@ -192,6 +192,9 @@
                                 <button onclick="openEditModal(${row.id}, '${row.item_name}', ${row.quantity})" class="text-blue-500 hover:text-blue-700 font-semibold text-sm">
                                     Edit
                                 </button>
+                                <button onclick="deleteItem(${row.id})" class="text-red-500 hover:text-red-700 font-semibold text-sm">
+                                    Delete
+                                </button>
                             </td>
                         </tr>
                     `;
@@ -230,6 +233,27 @@
                 alert(data);
             });
         });
+        
+        function deleteItem(id) {
+            const isConfirmed = confirm("Are you sure you want to permanently delete this item?");
+            
+            if (!isConfirmed) {
+                return;
+            }
+            
+            const deleteData = new FormData();
+            deleteData.append('id', id);
+            
+            fetch('delete_item.php', {
+                method: 'POST',
+                body: deleteData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                loadTableData();
+            });
+        }
         
         loadTableData();
     </script>

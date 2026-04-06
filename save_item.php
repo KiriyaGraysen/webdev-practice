@@ -1,9 +1,5 @@
 <?php
-$conn = new mysqli("127.0.0.1", "root", "", "system_db");
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require_once('php/database.php');
 
 $name = $_POST['itemName'];
 $qty = $_POST['itemQty'];
@@ -11,7 +7,7 @@ $qty = $_POST['itemQty'];
 $stmt = $conn->prepare("
     INSERT INTO inventory (item_name, quantity)
     VALUES (?, ?)
-    ");
+");
 $stmt->bind_param("ss", $name, $qty);
 
 if ($stmt->execute()) {
